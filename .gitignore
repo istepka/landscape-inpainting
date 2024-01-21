@@ -1,0 +1,6 @@
+__pycache__/
+.vscode/
+mlflow/
+models/
+figures/
+data/
