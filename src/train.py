@@ -1,19 +1,19 @@
+import os
+import sys
+import warnings
 import numpy as np 
 import pandas as pd
 import seaborn as sns 
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
+import mlflow
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.utils.data import Dataset, DataLoader
 import lightning as L
 from lightning import LightningModule
-from torch.utils.data import Dataset, DataLoader
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-import mlflow
-import os
-import sys
-import warnings
 
 if __name__ == '__main__':
     # Seed for reproducibility
