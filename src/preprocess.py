@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import os
 import multiprocessing as mp
 import argparse
+import shutil
 
 def preprocess_image(img_file: str, size: tuple = (256, 256)) -> np.ndarray:
     """
@@ -76,38 +77,17 @@ def preprocess_data(data_dir: str,
     processes = []
     img_files_split = np.array_split(img_files, num_workers)
     
-    def __preprocess_worker(img_files: list, out_dir: str, size: tuple) -> None:
-        _failed = 0
-        _saved = 0
-        for i, img_file in enumerate(img_files):
-            try:
-                img = preprocess_image(img_file, size)
-                
-                for j, im in enumerate(img):
-                    im = PIL.Image.fromarray(im)
-                    
-                    img_name = "".join([c for c in np.random.choice(list('abcdefghijklmnopqrstuvwxyz1234567890'), 25)]) + '.jpg'
-                    img_dir = os.path.join(out_dir, img_name)
-                    
-                    im.save(img_dir)
-                    _saved += 1
-                    
-            except Exception as e:
-                print(e)
-                print(f'Failed to preprocess image {img_file}')
-                _failed += 1
-                
-        print(f'Worker {mp.current_process().name} finished preprocessing {len(img_files)} images. \
-            \nFailed to preprocess {_failed} images out of {len(img_files)}' \
-            f'\nSaved {_saved} images to {out_dir}'
-            )
+   
     
     try:
         # Remove out_dir if it already exists
         if os.path.exists(out_dir):
-            os.system(f'rm -rf {out_dir}')
+            shutil.rmtree(out_dir, ignore_errors=True)
+            
+        # Create out_dir
         os.makedirs(out_dir, exist_ok=True)
         
+        # Start processes
         for i in range(num_workers):
             p = mp.Process(target=__preprocess_worker, args=(img_files_split[i], out_dir, size))
             processes.append(p)
@@ -122,7 +102,33 @@ def preprocess_data(data_dir: str,
     except Exception as e:
         print(e)
         return False
-        
+
+def __preprocess_worker(img_files: list, out_dir: str, size: tuple) -> None:
+    _failed = 0
+    _saved = 0
+    for i, img_file in enumerate(img_files):
+        try:
+            img = preprocess_image(img_file, size)
+            
+            for j, im in enumerate(img):
+                im = PIL.Image.fromarray(im)
+                
+                img_name = "".join([c for c in np.random.choice(list('abcdefghijklmnopqrstuvwxyz1234567890'), 25)]) + '.jpg'
+                img_dir = os.path.join(out_dir, img_name)
+                
+                im.save(img_dir)
+                _saved += 1
+                
+        except Exception as e:
+            print(e)
+            print(f'Failed to preprocess image {img_file}')
+            _failed += 1
+            
+    print(f'Worker {mp.current_process().name} finished preprocessing {len(img_files)} images. \
+        \nFailed to preprocess {_failed} images out of {len(img_files)}' \
+        f'\nSaved {_saved} images to {out_dir}'
+        )
+
         
 if __name__ == '__main__':
     
