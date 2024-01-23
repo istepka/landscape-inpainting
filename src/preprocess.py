@@ -1,6 +1,5 @@
 import numpy as np 
-import PIL
-import matplotlib.pyplot as plt
+from PIL import Image
 import os
 import multiprocessing as mp
 import argparse
@@ -24,7 +23,7 @@ def preprocess_image(img_file: str, size: tuple = (256, 256)) -> np.ndarray:
     # If image is more than 2x larger than desired size in both dimensions,
     # We want to extract all non-overlapping crops of size (w, h) from the image
     # Otherwise, we want to resize the image to (w, h)
-    img = PIL.Image.open(img_file)
+    img = Image.open(img_file)
     img_w, img_h = img.size
     
     if img_w >= 2 * w and img_h >= 2 * h:
@@ -111,7 +110,7 @@ def __preprocess_worker(img_files: list, out_dir: str, size: tuple) -> None:
             img = preprocess_image(img_file, size)
             
             for j, im in enumerate(img):
-                im = PIL.Image.fromarray(im)
+                im = Image.fromarray(im)
                 
                 img_name = "".join([c for c in np.random.choice(list('abcdefghijklmnopqrstuvwxyz1234567890'), 25)]) + '.jpg'
                 img_dir = os.path.join(out_dir, img_name)

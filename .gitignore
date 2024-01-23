@@ -4,3 +4,6 @@ mlflow/
 models/
 figures/
 data/
+mlruns/
+lightning_logs/
+venv/
