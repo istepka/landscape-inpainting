@@ -97,10 +97,13 @@ class CustomDataset(Dataset):
         masks = np.array([mask for _ in range(samples.shape[0])])
         
         # masks[:, masks.shape[1] // 4: 3 * masks.shape[1] // 4, masks.shape[2] // 4: 3 * masks.shape[2] // 4, :] = 0
-        samples = torch.tensor(samples).to(self.device)
-        masks = torch.tensor(masks).to(self.device)
+        samples = torch.tensor(samples)
+        masks = torch.tensor(masks)
         # print(samples.shape, masks.shape)
         # print('tensor', samples.mean(), samples.std())
+        
+        # print(f'Smaples shape {samples.shape}, masks shape {masks.shape}')
+        
         return samples.permute(0, 3, 1, 2), masks.permute(0, 3, 1, 2) # (N, C, W, H)
 
 class CustomDataModule(L.LightningDataModule):
@@ -133,11 +136,11 @@ class CustomDataModule(L.LightningDataModule):
             self.test_dataset = CustomDataset('test', os.path.join(self.data_dir, 'test'), pretransform=self.pretransform, transform=self.transform, load_into_memory=self.load_into_memory, device=self.device)
 
     def train_dataloader(self):
-        dl = DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=self.num_workers, shuffle=True, persistent_workers=True)
+        dl = DataLoader(self.train_dataset, batch_size=self.batch_size, num_workers=self.num_workers, shuffle=True)
         return dl
 
     def val_dataloader(self):
-        dl = DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=self.num_workers, shuffle=False, persistent_workers=True)
+        dl = DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=self.num_workers, shuffle=False)
         return dl
     
     def test_dataloader(self):

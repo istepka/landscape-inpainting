@@ -47,7 +47,7 @@ if __name__ == '__main__':
         'generator_lr': 1e-3,
         'discriminator_lr': 1e-3,
         'epochs': 1,
-        'num_workers': mp.cpu_count() - 1,
+        'num_workers': 4,
         'overfit_single_batch': True,
         'device': torch.device('cuda' if torch.cuda.is_available() else 'cpu'),
         'pretransform': scaler,
@@ -188,12 +188,12 @@ if __name__ == '__main__':
         mlflow.log_params(HPARAMS)
         
         # Make sure model is on the right device
-        model = model.to(HPARAMS['device'])
+        # model = model.to(HPARAMS['device'])
     
         # Set up trainer
         trainer = L.Trainer(
-            accelerator=HPARAMS['device'],
-            devices=1 if HPARAMS['device'] == 'cuda' else 'auto',
+            # accelerator=HPARAMS['device'],
+            # devices=1 if HPARAMS['device'] == 'cuda' else 'auto',
             max_epochs=HPARAMS['epochs'],
             callbacks=callbacks,
             # deterministic=False,
@@ -201,6 +201,7 @@ if __name__ == '__main__':
             log_every_n_steps=1,
             # fast_dev_run=True,
             # precision=16 if HPARAMS['device'] == 'cuda' else 32,
+            profiler='simple',
         )
         
         # Train
@@ -241,7 +242,7 @@ if __name__ == '__main__':
             batch = test_dataloader.dataset.__getitems__([0,1,2,3,4,5,6,7,8,9])
             
             # Make sure batch is on the same device as the model
-            batch = [b.cpu() for b in batch]            
+            # batch = [b.cpu() for b in batch]            
             
             # Actually, just get 10 images
             # Unpack batch
@@ -283,17 +284,3 @@ if __name__ == '__main__':
                 # Log the figure
                 mlflow.log_figure(fig, f'example_{i}.png')
                 plt.savefig(os.path.join(figure_dir, f'example_{i}.png'))
-                
-                
-            
-
-            
-            
-                
-                
-                
-            
-        
-        
-    
-    

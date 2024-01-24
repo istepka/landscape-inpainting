@@ -109,6 +109,12 @@ def __preprocess_worker(img_files: list, out_dir: str, size: tuple) -> None:
         try:
             img = preprocess_image(img_file, size)
             
+            # Check if has 3 channels
+            if len(img.shape) != 4:
+                print(f'Image {img_file} has {len(img.shape)} channels, skipping')
+                _failed += 1
+                continue
+            
             for j, im in enumerate(img):
                 im = Image.fromarray(im)
                 
