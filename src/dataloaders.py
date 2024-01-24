@@ -2,10 +2,13 @@ import os
 import torch
 from torch.utils.data import Dataset, DataLoader
 from PIL import Image
-from transformations import TransformClass
+from transformations import TransformClass, TransformStandardScaler
 import lightning as L
 import numpy as np
+
+
 class CustomDataset(Dataset):
+    
     def __init__(self, 
                  name: str, 
                  data_dir: str, 
@@ -13,7 +16,7 @@ class CustomDataset(Dataset):
                  transform: TransformClass = None, 
                  load_into_memory=True, 
                  device='cuda',
-                 fit_pretransform_size: float = 0.1
+                 fit_pretransform_size: float = 1.0
                  ) -> None:
         '''
         Parameters:
@@ -31,97 +34,74 @@ class CustomDataset(Dataset):
         self.load_into_memory = load_into_memory
         self.device = device
         self.name = name
-        
+        self.__data = None
+ 
         # Load the data
-        self.data = self.load_data(fit_pretransform_size=fit_pretransform_size)
+        self.load_data()
         
-    def load_data(self, fit_pretransform_size: float = 0.1):
+    def load_data(self):
         self.data_paths = []
         for f in os.listdir(self.data_dir):
             if os.path.splitext(f)[1].lower() in ['.jpg', '.jpeg', '.png']:
                 self.data_paths.append(os.path.join(self.data_dir, f))
-        
-        if self.name == 'train':
-            self.data = []
-            for f in self.data_paths:
-                try:
-                    self.data.append(np.array(Image.open(f)))
-                except Exception as e:
-                    print(f'Failed to load {f}, because {e}')
-                    
-                if fit_pretransform_size * len(self.data_paths) < len(self.data):
-                    print(f'Loaded {len(self.data)} images for pretransform fitting')
-                    break
             
-            self.data = np.array(self.data)
-            self.data = torch.Tensor(self.data).permute(0, 3, 1, 2) # Reshape to (N, C, W, H)
-            if self.device == 'cuda':
-                self.data = self.data.to(self.device)
-            # Fit the Pretransform on the data
-            print(f'Fitting pretransform on {len(self.data)} images. Dims: {self.data.shape}')
-            self.pretransform.fit(self.data)
-            print(f'Performed fit on {len(self.data)} images')
-            del self.data 
-            if not self.load_into_memory:
-                self.data = self.data_paths
-                print(f'Loaded {len(self.data)} image paths into memory')
-        else:
-            if not self.load_into_memory:
-                self.data = self.data_paths
-                print(f'Loaded {len(self.data)} image paths into memory')
-                
-        if self.load_into_memory:
-            self.data = []
-            for f in self.data_paths:
-                try:
-                    a = np.array(Image.open(f))
-                    assert a.shape[2] == 3, f'Image {f} has {a.shape[2]} channels, but should have 3'
-                    self.data.append(a)
-                except Exception as e:
-                    print(f'Failed to load {f}, because {e}')
-                    
-            self.data = np.array(self.data)
-            self.data = torch.Tensor(self.data).permute(0, 3, 1, 2) # Reshape to (N, C, W, H)
-            if self.device == 'cuda':
-                self.data = self.data.to(self.device)
-            print(f'Loaded {len(self.data)} images into memory: their shape is {self.data.shape}')
-            
-            # Perform the pretransform
-            print(f'Pretransforming {len(self.data)} images')
-            self.data = self.pretransform.transform(self.data)
-            print(f'Performed pretransform on {len(self.data)} images')
-                
-        return self.data
+        self.__data = np.array(self.data_paths)
+        print(f'Loaded {len(self.__data)} image paths into memory')
         
 
     def __len__(self):
-        return len(self.data)
+        return len(self.__data)
 
     def __getitem__(self, idx):
-        sample = self.data[idx]
+        # path = self.__data[idx]
         
-        # If we're not loading into memory, load the image
-        if not self.load_into_memory:
-            sample = Image.open(sample)
-            sample = np.array(sample)
-            sample = torch.tensor(sample)
-            sample = sample.to(self.device)
-            sample = sample.permute(2, 0, 1)
-            sample = sample.unsqueeze(0)
-            sample = self.pretransform.transform(sample)
-            sample = sample.squeeze(0)
+        # sample = Image.open(path)
+        # sample = np.array(sample).astype(np.float32)
+        # if self.pretransform:
+        #     sample = sample.reshape(1, sample.shape[0], sample.shape[1], sample.shape[2])
+        #     sample = self.pretransform.transform(sample)
+        #     sample = sample.reshape(sample.shape[1], sample.shape[2], sample.shape[3])
+        #     # print('a', sample.shape)
         
+        # # Apply the transform in real time
+        # if self.transform:
+        #     sample = self.transform(sample)
+        
+        # mask = np.ones_like(sample)
+        # mask[mask.shape[1] // 4: 3 * mask.shape[1] // 4, mask.shape[2] // 4: 3 * mask.shape[2] // 4, :] = 0
+        # sample = torch.tensor(sample).to(self.device)
+        # mask = torch.tensor(mask).to(self.device)
+
+        # return sample.permute(2, 0, 1), mask.permute(2, 0, 1) # (C, W, H)
+        return self.__getitems__([idx])
+    
+    def __getitems__(self, idxs):
+        paths = self.__data[idxs]
+        
+        samples = np.array([np.array(Image.open(path)) for path in paths]).astype(np.float32)
+        if self.pretransform:
+            samples = self.pretransform.transform(samples)
+            # samples = samples.reshape(samples.shape[0], samples.shape[3], samples.shape[1], samples.shape[2])
+            # print(self.pretransform.mean, self.pretransform.std)
+            # print(samples.mean(), samples.std())
+            
         # Apply the transform in real time
         if self.transform:
-            sample = self.transform(sample)
+            samples = self.transform.transform(samples)
+            
+        # print('np', samples.mean(), samples.std())
+            
+        w, h = samples.shape[1], samples.shape[2]
+        mask = np.ones(shape=(w, h, 3))
+        mask[w // 4: 3 * w // 4, h // 4: 3 * h // 4, :] = 0
+        masks = np.array([mask for _ in range(samples.shape[0])])
         
-        mask = torch.zeros_like(sample)
-
-        mask[:, mask.shape[1] // 4: 3 * mask.shape[1] // 4, mask.shape[2] // 4: 3 * mask.shape[2] // 4] = 0
-        mask = mask.to(self.device)
-
-        return sample * mask, mask
-
+        # masks[:, masks.shape[1] // 4: 3 * masks.shape[1] // 4, masks.shape[2] // 4: 3 * masks.shape[2] // 4, :] = 0
+        samples = torch.tensor(samples).to(self.device)
+        masks = torch.tensor(masks).to(self.device)
+        # print(samples.shape, masks.shape)
+        # print('tensor', samples.mean(), samples.std())
+        return samples.permute(0, 3, 1, 2), masks.permute(0, 3, 1, 2) # (N, C, W, H)
 
 class CustomDataModule(L.LightningDataModule):
     def __init__(self, 
@@ -144,7 +124,9 @@ class CustomDataModule(L.LightningDataModule):
 
     def setup(self, stage=None):
         # Initialize the dataset for each stage (train, val, test)
-        if stage == 'fit' or stage is None:
+        if stage == 'fit':
+            self.train_dataset = CustomDataset('fit', os.path.join(self.data_dir, 'train'), pretransform=None, transform=self.transform, load_into_memory=self.load_into_memory, device=self.device)
+        if stage == 'train' or stage is None:
             self.train_dataset = CustomDataset('train', os.path.join(self.data_dir, 'train'), pretransform=self.pretransform, transform=self.transform, load_into_memory=self.load_into_memory, device=self.device)
             self.val_dataset = CustomDataset('val', os.path.join(self.data_dir, 'val'), pretransform=self.pretransform, transform=self.transform, load_into_memory=self.load_into_memory, device=self.device)
         if stage == 'test' or stage is None:

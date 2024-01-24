@@ -83,6 +83,28 @@ class EncoderDecoder(LightningModule):
         
         return loss
     
+    def test_step(self, batch, batch_idx):
+        # Unpack the batch
+        image, mask = batch
+        
+        # Generate the output
+        output = self(image, mask)
+        
+        # Calculate the loss
+        loss = F.binary_cross_entropy(output, image)
+        
+        # Log the loss
+        self.log('test_loss', loss)
+        self.log('test_l1', F.l1_loss(output, image))
+        self.log('test_rmse', torch.sqrt(F.mse_loss(output, image)))
+        
+        mlflow.log_metric('test_loss', loss)
+        mlflow.log_metric('test_l1', F.l1_loss(output, image))
+        mlflow.log_metric('test_rmse', torch.sqrt(F.mse_loss(output, image)))
+        
+        return loss
+    
+    
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(
             self.parameters(), 
@@ -90,6 +112,12 @@ class EncoderDecoder(LightningModule):
             weight_decay=self.params['weight_decay']
         )
         return optimizer
+    
+    def on_train_epoch_end(self) -> None:
+        super().on_train_epoch_end()
+        
+        self.log('lr', self.optimizers().param_groups[0]['lr'])
+        mlflow.log_metric('lr', self.optimizers().param_groups[0]['lr'])
 
 
 class UNet(LightningModule):
@@ -186,6 +214,27 @@ class UNet(LightningModule):
         
         return loss
     
+    def test_step(self, batch, batch_idx):
+        # Unpack the batch
+        image, mask = batch
+        
+        # Generate the output
+        output = self(image, mask)
+        
+        # Calculate the loss
+        loss = F.binary_cross_entropy(output, image)
+        
+        # Log the loss
+        self.log('test_loss', loss)
+        self.log('test_l1', F.l1_loss(output, image))
+        self.log('test_rmse', torch.sqrt(F.mse_loss(output, image)))
+        
+        mlflow.log_metric('test_loss', loss)
+        mlflow.log_metric('test_l1', F.l1_loss(output, image))
+        mlflow.log_metric('test_rmse', torch.sqrt(F.mse_loss(output, image)))
+        
+        return loss
+    
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(
             self.parameters(), 
@@ -193,3 +242,9 @@ class UNet(LightningModule):
             weight_decay=self.params['weight_decay']
         )
         return optimizer
+    
+    def on_train_epoch_end(self) -> None:
+        super().on_train_epoch_end()
+        
+        self.log('lr', self.optimizers().param_groups[0]['lr'])
+        mlflow.log_metric('lr', self.optimizers().param_groups[0]['lr'])
