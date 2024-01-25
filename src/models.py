@@ -5,10 +5,8 @@ import torch
 import torch.nn.functional as F
 import pytorch_lightning as L
 import torch.nn as nn
-import pytorch_ssim
 
 from .utils import show_images
-
 
 class ImageInpainting(L.LightningModule):
     def __init__(self, model, config):
@@ -125,7 +123,6 @@ class ImageInpainting(L.LightningModule):
         self.log_dict(final_metrics)
         return super().on_test_end()
 
-
 class EncoderDecoder(nn.Module):
     def __init__(self):
         super().__init__()
@@ -157,8 +154,6 @@ class EncoderDecoder(nn.Module):
         x = self.decoder(x)
         return x
 
-  
-    
 class UNet(nn.Module):
     def __init__(self):
         super().__init__()

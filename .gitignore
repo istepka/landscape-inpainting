@@ -7,3 +7,6 @@ data/
 mlruns/
 lightning_logs/
 venv/
+wandb/
+run*/
+*.ckpt

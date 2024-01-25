@@ -19,11 +19,17 @@ def augument(image: np.array) -> np.array:
     return image
 
 class ShapesDataset(torch.utils.data.Dataset):
-    def __init__(self, images: np.array, masks: list, transform: object = None, fill_color: str = 'black'):
+    def __init__(self, images: np.array, 
+                 masks: list, 
+                 transform: object = None, 
+                 fill_color: str = 'black',
+                 augument: bool = True
+                 ):
         self.images = images
         self.masks = masks
         self.transform = transform
         self.fill_color = fill_color
+        self.augument = augument
         
     def __len__(self):
         return len(self.images)
@@ -33,7 +39,8 @@ class ShapesDataset(torch.utils.data.Dataset):
         mask = np.zeros_like(image)
         
         # Apply augmentation 
-        image = augument(image)
+        if self.augument:
+            image = augument(image)
         
         # Randomly choose a number of shapes to paste onto the image
         num_shapes = np.random.randint(1, 10)
