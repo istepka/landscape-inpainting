@@ -367,8 +367,7 @@ code {
   </script>
 <h1 id="inpainting-landscapes">Inpainting landscapes</h1>
 <h2 id="introduction">Introduction</h2>
-<p>#TODO</p>
-<hr>
+<h2 id="this-project-is-about-inpainting-images-of-landscapes-in-this-case-inpainting-is-based-on-the-idea-of-masking-parts-of-the-image-and-then-filling-the-missing-parts-with-plausible-content">This project is about inpainting images of landscapes. In this case, inpainting is based on the idea of masking parts of the image and then filling the missing parts with plausible content.</h2>
 <h2 id="installation">Installation</h2>
 <ol>
 <li>Clone the repository</li>
@@ -402,6 +401,12 @@ code {
     --experiment_name [STR, (default <span class="hljs-variable">$model</span>)]
     ]
 </div></code></pre>
+<ol start="3">
+<li>Demo<br>
+A demo for the purpose of this project is a Gradio UI. To run it, run the following command:<pre class="hljs"><code><div>python gradio_app.py
+</div></code></pre>
+Somewhat equivalent demo is in the juptyer notebook <code>demo.ipynb</code>.</li>
+</ol>
 <h2 id="data-sources">Data sources</h2>
 <p>The dataset is comprised of 16k images of landscapes. They were collected from the following sources:</p>
 <ol>

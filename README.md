@@ -1,8 +1,7 @@
 # Inpainting landscapes
 
 ## Introduction
-#TODO
-
+This project is about inpainting images of landscapes. In this case, inpainting is based on the idea of masking parts of the image and then filling the missing parts with plausible content. 
 ---
 ## Installation
 1. Clone the repository
@@ -32,6 +31,13 @@ python src/train.py [ OPTIONAL ARGUMENTS
     --experiment_name [STR, (default $model)]
     ]
 ```
+
+3. Demo  
+    A demo for the purpose of this project is a Gradio UI. To run it, run the following command:
+    ```bash
+    python gradio_app.py
+    ```
+    Somewhat equivalent demo is in the juptyer notebook `demo.ipynb`.
 
 ## Data sources 
 The dataset is comprised of 16k images of landscapes. They were collected from the following sources:
