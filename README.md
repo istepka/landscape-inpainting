@@ -71,6 +71,7 @@ Implementation here has separate encoder and decoder parts. The encoder consists
 Specification:
 - Parameters: ~744 K
 - Weight: ~ 3 MB
+- Inference time on CPU for a single image: ~ 0.12 s
 - Default config:
     - Epochs: 20
     - LR: 1e-3
@@ -85,6 +86,7 @@ Implementation provided here has an encoder with three blocks, a bottleneck laye
 Specification:
 - Parameters: 2.7 M
 - Weight: ~ 10.6 MB
+- Inference time on CPU for a single image: ~ 0.19 s
 - Default config:
     - Epochs: 20
     - LR: 1e-3

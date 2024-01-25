@@ -6,6 +6,7 @@ from src.utils import create_circle, create_square, paste_shape
 from src.models import ImageInpainting, UNet
 from src.datasets import ShapesDataset, ToTensor
 import torch
+import time
 
 def load_images(dir: str = 'images') -> np.ndarray:
     images = []
@@ -37,7 +38,9 @@ def process_image(image, mask):
     masked_image = torch.from_numpy(masked_image).float().permute(2, 0, 1)
     mask = torch.from_numpy(mask).float().permute(2, 0, 1)
     
+    t = time.time()
     inpainted = model(mask.unsqueeze(0), masked_image.unsqueeze(0))
+    print(f'Inference time in seconds: {time.time() - t}')
     
     # Clip the output to be between 0 and 1
     inpainted = torch.clamp(inpainted, 0, 1)
