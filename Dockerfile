@@ -4,7 +4,7 @@ FROM python:3.11.7-slim-bullseye
 # Set the working directory in the container to /app
 WORKDIR /app
 
-ARG GRADIO_SERVER_PORT=8082
+ARG GRADIO_SERVER_PORT=8089
 ENV GRADIO_SERVER_PORT=${GRADIO_SERVER_PORT}
 
 # Add the current directory contents into the container at /app
@@ -17,8 +17,7 @@ ADD images /app/images
 # Install any needed packages specified in requirements.txt
 RUN pip install -r requirements.txt
 
-
-EXPOSE 8082
+EXPOSE ${GRADIO_SERVER_PORT}
 
 # Run gradio_app.py when the container launches
-CMD [ "python", "gradio_app.py" ]
+CMD [ "python", "/app/gradio_app.py" ]

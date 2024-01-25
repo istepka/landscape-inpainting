@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>README.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="inpainting-landscapes">Inpainting landscapes</h1>
+<h2 id="introduction">Introduction</h2>
+<p>#TODO</p>
+<hr>
+<h2 id="installation">Installation</h2>
+<ol>
+<li>Clone the repository</li>
+</ol>
+<pre class="hljs"><code><div>git <span class="hljs-built_in">clone</span> git@github.com:istepka/im-outpainting.git
+</div></code></pre>
+<ol start="2">
+<li>Install the requirements</li>
+</ol>
+<pre class="hljs"><code><div>pip install -r requirements.txt
+</div></code></pre>
+<ol start="3">
+<li>Download the data from the following url: https://1drv.ms/u/c/35ddce87939617c8/EWyelnH8qlJEgFNjAX_z3EABZiNsaDIGrOS8du5V52DSXA?e=mkizPd and uzip it into the <code>data/raw</code> folder.</li>
+</ol>
+<h2 id="usage">Usage</h2>
+<ol>
+<li>Prepare the data</li>
+</ol>
+<pre class="hljs"><code><div>python src/preprocess.py [DEFAULT OPTIONS: --data_dir data/raw, --out_dir data/processed, --num_workers CPU_COUNT, --size 256]
+</div></code></pre>
+<ol start="2">
+<li>Train the model</li>
+</ol>
+<pre class="hljs"><code><div>python src/train.py [ OPTIONAL ARGUMENTS
+    --optimizer [<span class="hljs-string">"adam"</span>, <span class="hljs-string">"SGD"</span>, <span class="hljs-string">"rmsprop"</span>, <span class="hljs-string">"adagrad"</span>, (default <span class="hljs-string">"adam"</span>)] 
+    --epochs [INT, (default 20)]
+    --batch_size [INT, (default 32)  
+    --loss [<span class="hljs-string">"mse"</span> <span class="hljs-string">"l1"</span> <span class="hljs-string">"cross_entropy"</span> <span class="hljs-string">"poisson"</span> <span class="hljs-string">"kldiv"</span>, (default <span class="hljs-string">"mse"</span>)]
+    --learning_rate [INT, (default 1e-3)]
+    --model [<span class="hljs-string">"UNet"</span>, <span class="hljs-string">"Encoder-Decoder"</span>, (default <span class="hljs-string">"UNet"</span>)]
+    --experiment_name [STR, (default <span class="hljs-variable">$model</span>)]
+    ]
+</div></code></pre>
+<h2 id="data-sources">Data sources</h2>
+<p>The dataset is comprised of 16k images of landscapes. They were collected from the following sources:</p>
+<ol>
+<li>
+<p>Landscape Pictures (~4k images)
+https://www.kaggle.com/datasets/arnaud58/landscape-pictures?rvi=1</p>
+</li>
+<li>
+<p>Landscape Recognition Image Dataset (~12k images)
+https://www.kaggle.com/datasets/utkarshsaxenadn/landscape-recognition-image-dataset-12k-images</p>
+</li>
+</ol>
+<p>We cut-out 256x256 squares from images to create a larger dataset comprising of ~50k images instead of 16k. For experimentation purposes we decided to use smaller dataset size, so it is faster to train (and cheaper).</p>
+<p><strong>Data augumentation:</strong></p>
+<ul>
+<li>Random left-right flips</li>
+<li>Rotations by 90 degrees only</li>
+</ul>
+<p><strong>Splits:</strong></p>
+<ul>
+<li>Train - 10k</li>
+<li>Val - 2k</li>
+<li>Test - 10k</li>
+</ul>
+<p>Example of images:
+<img src="public/report/ex_images.png" alt=""></p>
+<p>Masks:
+<img src="public/report/ex_masks.png" alt=""></p>
+<p>Masks applied to images:
+<img src="public/report/ex_masked.png" alt=""></p>
+<h2 id="architectures">Architectures</h2>
+<p><em>An Encoder-Decoder</em> architecture comprises two parts: an encoder to extract features and a decoder to generate output. It's commonly used for tasks like image translation or image generation.
+Implementation here has separate encoder and decoder parts. The encoder consists of convolutional layers followed by batch normalization and ReLU activation. The decoder reverses this process, ending with a non-linear activation function.</p>
+<p>Specification:</p>
+<ul>
+<li>Parameters: ~744 K</li>
+<li>Weight: ~ 3 MB</li>
+<li>Default config:
+<ul>
+<li>Epochs: 20</li>
+<li>LR: 1e-3</li>
+<li>Optimizer: Adam</li>
+</ul>
+</li>
+</ul>
+<p>Diagram generatred with torchviz:
+<img src="public/report/EncoderDecoder.png" alt=""></p>
+<p><em>UNet</em> is a convolutional neural network architecture designed for semantic segmentation tasks. It consists of an encoder-decoder structure with skip connections, enabling precise localization.
+Implementation provided here has an encoder with three blocks, a bottleneck layer, and a decoder with corresponding blocks. Skip connections concatenate encoder and decoder feature maps.</p>
+<p>Specification:</p>
+<ul>
+<li>Parameters: 2.7 M</li>
+<li>Weight: ~ 10.6 MB</li>
+<li>Default config:
+<ul>
+<li>Epochs: 20</li>
+<li>LR: 1e-3</li>
+<li>Optimizer: Adam</li>
+</ul>
+</li>
+</ul>
+<p>Diagram generatred with torchviz:
+<img src="public/report/UNet.png" alt=""></p>
+<p>For both models, the parameters chosen for training are the same, and are kind of an arbitrary, but informed, choice. I experimented on small subset of the data and chose the parameters that seemed to work the best. I also tried to keep the number of parameters as low as possible, so that the training is faster and cheaper.</p>
+<h2 id="training">Training</h2>
+<h4 id="images-on-first-epoch">Images on first epoch:</h4>
+<p>Original images
+<img src="public/report/ep0_images.png" alt="input">
+<img src="public/report/ep0_masked.png" alt="masked">
+<img src="public/report/ep0_masks.png" alt="output"></p>
+<h4 id="images-on-the-last-epoch">Images on the last epoch:</h4>
+<p><img src="public/report/ep15_images.png" alt="input">
+<img src="public/report/ep15_masked.png" alt="masked">
+<img src="public/report/ep15_output.png" alt="output"></p>
+<p>I think the results are pretty good. We can see that the model is able to inpaint the images and fill the missing parts with plausible content. However, the input mask shapes are often pretty visible as blurry shapes. I believe being able to remove them would be a good next step for this project, but not an easy one. I would guess that we would have to use some sort of GAN architecture to achieve that or borrow some ideas from generative AI like loss function based on perceptual similarity or style transfer. Nevertheless, it is clear that model is able to kind of understand the context of the image and fill the missing parts with blurred, but very much plausible content (e.g. sky, grass, trees, edges, etc.).</p>
+<h2 id="demo--some-more-images">Demo / some more images</h2>
+<p><img src="public/report/demo_original.png" alt="original">
+<img src="public/report/demo_mask.png" alt="mask">
+<img src="public/report/demo_masked.png" alt="masked">
+<img src="public/report/demo_output.png" alt="output"></p>
+<h2 id="benchmarking">Benchmarking</h2>
+<h3 id="optimizers">Optimizers</h3>
+<p>Adam, SGD, RMSprop, Adagrad</p>
+<ul>
+<li>Adam: Adaptive Moment Estimation combines adaptive learning rates for each parameter with momentum to improve training efficiency and converge faster. This is a classic optimizer for deep learning and basically the default choice.</li>
+<li>Stochastic Gradient Descent (SGD): Updates model parameters in the direction opposite to the gradient of the loss function with respect to the parameters, using a fixed learning rate.</li>
+<li>RMSprop: Root Mean Square Propagation adapts the learning rate for each parameter by dividing it by the root of the mean square of recent gradients, helping to prevent oscillations in training.</li>
+<li>Adagrad: Adapts the learning rate for each parameter based on the historical gradients, scaling down the learning rate for frequently occurring parameters and vice versa to focus on less frequently updated parameters.</li>
+</ul>
+<p>*rmsprop is omitted in this visualizations because it achieved horrible results and makes it impossible to see anything useful on the plots.<br>
+The most interesting takeaway from this benchmark is that SGD is consistently much worse than Adam and Adagrad. Adam and Adagrad are very similar in terms of performance, but Adam is just a bit better.
+<img src="public/bench/optim_train_loss.png" alt="optim_train_loss">
+<img src="public/bench/optim_val_loss.png" alt="optim_val_lostt">
+<img src="public/bench/optim_test_l1.png" alt="optim_test_l1">
+<img src="public/bench/optim_test_l2.png" alt="optim_test_l2">
+<img src="public/bench/optim_test_pois.png" alt="optim_test_pois">
+<img src="public/bench/optim_train_time.png" alt="optim_train_time"></p>
+<h3 id="loss-functions">Loss functions</h3>
+<p>Lossess used: MSE, L1, PoissonNLLoss, KLDivLoss, CrossEntropyLoss.</p>
+<ul>
+<li>Mean Squared Error (MSE): Measures the average squared difference between predicted and target values, penalizing larger errors more heavily.</li>
+<li>L1 Loss (MAE): Computes the mean absolute difference between predicted and target values, providing a robust measure of error that is less sensitive to outliers.</li>
+<li>Poisson Negative Log Likelihood Loss (PoissonNLLLoss): Optimized for count data, it measures the negative log likelihood of a Poisson distribution to model the discrepancy between predicted and target values.</li>
+<li>Kullback-Leibler Divergence Loss (KLDivLoss): Measures how one probability distribution diverges from a second, typically a theoretical or target distribution, often used in variational autoencoders.</li>
+<li>Cross-Entropy Loss: Measures the difference between two probability distributions, commonly used in classification tasks to penalize incorrect classifications and encourage the model to assign higher probabilities to the correct class. However, we don't use it in it's binary form, but rather as a pixel-wise cross entropy loss.</li>
+</ul>
+<p>Now, analysing loss functions. From train/val loss curves we see that all loss functions perform similarly. In terms of test MAE (L1) and MSE (L2) we see that L1 is the best choice and is closely followed by poisson loss. KLDiv is the worst choice.
+<img src="public/bench/loss_train_loss.png" alt="loss_train_loss">
+<img src="public/bench/loss_val_loss.png" alt="loss_val_loss">
+<img src="public/bench/loss_test_l1.png" alt="loss_test_l1">
+<img src="public/bench/loss_test_l2.png" alt="loss_test_l2">
+<img src="public/bench/loss_test_pois.png" alt="loss_test_pois">
+<img src="public/bench/loss_train_time.png" alt="loss_train_time"></p>
+<h3 id="unet-vs-encoder-decoder">UNet vs Encoder-Decoder</h3>
+<p>Encoder-Decoder architecure results clearly show that UNet is a better choice for this task. However, I have arbitrarly made the decision to have Encoder-Decoder as sort  of a smaller model for faster training. But, as we can see from the results, it's being outperformed by UNet by landslide.<br>
+<img src="public/bench/eu_params.png" alt="params"></p>
+<p><img src="public/bench/eu_test_l1.png" alt="test_l1"></p>
+<h2 id="other">Other</h2>
+<ul>
+<li>
+<p><strong>UI with Gradio</strong>
+<img src="public/report/misc/gradio.png" alt="gradio">
+To run the UI, run the following command:</p>
+<pre class="hljs"><code><div>python gradio_app.py
+</div></code></pre>
+</li>
+<li>
+<p><strong>Deployment for training in cloud (RunPod)</strong></p>
+<p>I was running experiments using RunPod environment with RTXA5000 GPU. It allowed me to run experiments in the cloud and save the results to the cloud. It was very convenient and I would recommend it. Also, it isn't very expensive.
+<img src="public/report/misc/run_pod.png" alt="runpod"></p>
+</li>
+<li>
+<p><strong>Docker image for Gradio App</strong></p>
+<pre class="hljs"><code><div><span class="hljs-comment"># Build the image</span>
+docker build -t inpainting .
+<span class="hljs-comment"># Run the image</span>
+docker run -p 8087:8087 inpainting
+<span class="hljs-comment"># Now you can access the app at http://localhost:8087</span>
+</div></code></pre>
+</li>
+<li>
+<p><strong>WanDB tracking</strong><br>
+All experiments were tracked using Weights &amp; Biases. I decided to use this tracking tool for the first time and I really liked it. It's very easy to use and it provides a nice UI and remote storage for all the experiments. Before, I was using MLFlow and I think I will stick with WanDB from now on.
+<img src="public/report/misc/wandb.png" alt="wandb"></p>
+</li>
+</ul>
+<h2 id="grading">Grading</h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Points</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Image inpainting</td>
+<td>3</td>
+<td>The model is able to inpaint images</td>
+</tr>
+<tr>
+<td>Own architecture (&gt;50% own layers)</td>
+<td>2</td>
+<td>Encoder-Decoder CNN architecture</td>
+</tr>
+<tr>
+<td>2nd own architecture with &gt;50% own layers</td>
+<td>2</td>
+<td>Own UNet implementation</td>
+</tr>
+<tr>
+<td>Evaluation on a test set &gt;= 10k</td>
+<td>1</td>
+<td>Performed evaluation on 10,000 images in the test set</td>
+</tr>
+<tr>
+<td>Testing various loss functions</td>
+<td>1</td>
+<td>MSE, L1, PoissonNLLoss, KLDivLoss, CrossEntropyLoss</td>
+</tr>
+<tr>
+<td>Testing various optimizers</td>
+<td>1</td>
+<td>Adam, SGD, RMSprop, Adagrad</td>
+</tr>
+<tr>
+<td>Image augmentations</td>
+<td>1</td>
+<td>Running random transformations on the input image before feeding it to the network</td>
+</tr>
+<tr>
+<td>Weights &amp; Biases</td>
+<td>1</td>
+<td>Wandb properly set up -- everything was tracked in it and I used data I saved to wandb for analysis</td>
+</tr>
+<tr>
+<td>Run as Docker</td>
+<td>1</td>
+<td>Dockerfile for building the docker image containing the Gradio UI</td>
+</tr>
+<tr>
+<td>Gradio GUI</td>
+<td>1</td>
+<td>Gradio UI for inpainting</td>
+</tr>
+<tr>
+<td>RunPod   (DevOps)</td>
+<td>1</td>
+<td>Set up development environment with RunPod</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><strong>Total: 15</strong></p>
+<h2 id="references">References</h2>
+<p>Related stuff that I used to understand the topic and implement the project:
+[1] UNet: https://arxiv.org/abs/1505.04597s<br>
+[2] UNet + Attention: https://arxiv.org/pdf/2209.08850.pdf<br>
+[3] II-GAN: https://ieeexplore.ieee.org/document/8322859</p>
+<h2 id="license">License</h2>
+<p>MIT License</p>
+
+</body>
+</html>
