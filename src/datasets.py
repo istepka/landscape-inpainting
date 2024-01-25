@@ -2,6 +2,22 @@ import numpy as np
 import torch
 from .utils import paste_shape
 
+def augument(image: np.array) -> np.array:
+    
+    # Randomly flip the image horizontally
+    if np.random.rand() > 0.7:
+        image = np.fliplr(image).copy()
+        
+    # Randomly flip the image vertically
+    if np.random.rand() > 0.7:
+        image = np.flipud(image).copy()
+        
+    # Randomly rotate the image by 90 degrees
+    if np.random.rand() > 0.9:
+        image = np.rot90(image).copy()
+    
+    return image
+
 class ShapesDataset(torch.utils.data.Dataset):
     def __init__(self, images: np.array, masks: list, transform: object = None, fill_color: str = 'black'):
         self.images = images
@@ -15,6 +31,9 @@ class ShapesDataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         image = self.images[idx].copy()
         mask = np.zeros_like(image)
+        
+        # Apply augmentation 
+        image = augument(image)
         
         # Randomly choose a number of shapes to paste onto the image
         num_shapes = np.random.randint(1, 10)

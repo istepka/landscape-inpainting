@@ -24,11 +24,13 @@ class ImageInpainting(L.LightningModule):
         image, mask, masked_image = batch['image'], batch['mask'], batch['masked_image']
         output = self(mask, masked_image)
         loss = F.mse_loss(output, image)
-        ssim_loss = 1 - pytorch_ssim.ssim(output, image)
         
         self.log(name='train_loss', value=loss, prog_bar=True)
-        self.log(name='train_ssim', value=ssim_loss, prog_bar=True)
+        
+        # metrics
         self.log(name='train_l1', value=F.l1_loss(output, image), prog_bar=True)
+        self.log(name='train_l2', value=F.mse_loss(output, image), prog_bar=True)
+        self.log(name='train_cos_sim', value=F.cosine_similarity(output, image).mean(), prog_bar=True)
         
         return loss
     
@@ -36,10 +38,14 @@ class ImageInpainting(L.LightningModule):
         image, mask, masked_image = batch['image'], batch['mask'], batch['masked_image']
         output = self(mask, masked_image)
         loss = F.mse_loss(output, image)
-        l1_loss = F.l1_loss(output, image)
         
         self.log(name='val_loss', value=loss, prog_bar=True)
-        self.log(name='val_l1', value=l1_loss, prog_bar=True)
+        
+        # metrics
+        self.log(name='val_l1', value=F.l1_loss(output, image), prog_bar=True)
+        self.log(name='val_l2', value=F.mse_loss(output, image), prog_bar=True)
+        self.log(name='val_cos_sim', value=F.cosine_similarity(output, image).mean(), prog_bar=True)
+        self.log(name='val_poiss', value=F.poisson_nll_loss(output, image), prog_bar=True)
         
         return loss
     
@@ -48,12 +54,13 @@ class ImageInpainting(L.LightningModule):
         output = self(mask, masked_image)
         
         loss = self.loss_fnc(output, image)
-        
-        l1_loss = F.l1_loss(output, image)
-        # Similarity metric
-        
         self.log(name='test_loss', value=loss)
-        self.log(name='test_l1', value=l1_loss)
+        
+        # metrics
+        self.log(name='test_l1', value=F.l1_loss(output, image), prog_bar=True)
+        self.log(name='test_l2', value=F.mse_loss(output, image), prog_bar=True)
+        self.log(name='test_cos_sim', value=F.cosine_similarity(output, image).mean(), prog_bar=True)
+        self.log(name='test_poiss', value=F.poisson_nll_loss(output, image), prog_bar=True)
         
         return loss
     
