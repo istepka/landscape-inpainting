@@ -39,11 +39,18 @@ def process_image(image, mask):
     
     inpainted = model(mask.unsqueeze(0), masked_image.unsqueeze(0))
     
+    # Clip the output to be between 0 and 1
+    inpainted = torch.clamp(inpainted, 0, 1)
+    
     # Convert the output to numpy array
     output = inpainted.squeeze(0).permute(1, 2, 0).detach().numpy()
     masked_image = masked_image.permute(1, 2, 0).detach().numpy()
     
+    print('----')
+    
     return (masked_image * 255).astype(np.uint8), (output  * 255).astype(np.uint8)
+
+# Run stuff
 
 model = ImageInpainting.load_from_checkpoint(checkpoint_path='checkpoints/inference.ckpt', model=UNet(), config=None)
 model.eval()
@@ -55,16 +62,16 @@ example_masks = np.zeros_like(example_images)
 for i in range(len(example_images)):
     example_masks[i] = paste_shape(np.zeros_like(example_images[0]), example_masks_elements[i % 2]) * 255
 
+INTERFACE_IM_SIZE = 512
 
 demo = gr.Interface(
     fn=process_image,
-    inputs=[gr.Image(), gr.Image()],
-    outputs=[gr.Image(), gr.Image()],
+    inputs=[gr.Image(height=INTERFACE_IM_SIZE, width=INTERFACE_IM_SIZE, label="Image"), gr.Image(height=INTERFACE_IM_SIZE, width=INTERFACE_IM_SIZE, label="Mask")],
+    outputs=[gr.Image(height=INTERFACE_IM_SIZE, width=INTERFACE_IM_SIZE, label="Masked Image"), gr.Image(height=INTERFACE_IM_SIZE, width=INTERFACE_IM_SIZE, label="Inpainted Image")],
     examples=[
-        [example_images[0], example_masks[0]],
-        [example_images[1], example_masks[1]],
+        [example_images[i], example_masks[i]] for i in range(len(example_images))
     ],
-    
+    title="Image Inpainting demo for the Computer Vision course",
 )
 
 demo.launch()

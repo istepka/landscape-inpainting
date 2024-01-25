@@ -100,9 +100,11 @@ Original images
 ![output](public/ep0_masks.png)
 
 #### Images on the last epoch:
-![input](public/ep19_images.png)
-![masked](public/ep19_masked.png)
-![output](public/ep19_output.png)
+![input](public/ep15_images.png)
+![masked](public/ep15_masked.png)
+![output](public/ep15_output.png)
+
+I think the results are pretty good. We can see that the model is able to inpaint the images and fill the missing parts with plausible content. However, the input mask shapes are often pretty visible as blurry shapes. I believe being able to remove them would be a good next step for this project, but not an easy one. I would guess that we would have to use some sort of GAN architecture to achieve that or borrow some ideas from generative AI like loss function based on perceptual similarity or style transfer. Nevertheless, it is clear that model is able to kind of understand the context of the image and fill the missing parts with blurred, but very much plausible content (e.g. sky, grass, trees, edges, etc.).
 
 ## Demo / some more images
 ![original](public/demo_original.png)
@@ -115,30 +117,56 @@ Original images
 ## Benchmarking
 
 ### Optimizers
-Adam, SGD, RMSprop, Adadelta  
-*rmsprop is omitted in this visualizations because it achieved horrible results and makes it impossible to see anything useful on the plots.
+Adam, SGD, RMSprop, Adagrad  
+*rmsprop is omitted in this visualizations because it achieved horrible results and makes it impossible to see anything useful on the plots.  
+The most interesting takeaway from this benchmark is that SGD is consistently much worse than Adam and Adagrad. Adam and Adagrad are very similar in terms of performance, but Adam is just a bit better.
 ![optim_train_loss](public/bench/optim_train_loss.png)
 ![optim_val_lostt](public/bench/optim_val_loss.png)
 ![optim_test_l1](public/bench/optim_test_l1.png)
 ![optim_test_l2](public/bench/optim_test_l2.png)
+![optim_test_pois](public/bench/optim_test_pois.png)
+![optim_train_time](public/bench/optim_train_time.png)
 
 ### Loss functions
-MSE, KLDivLoss, PoissonNLLoss, CELoss
-TODO: Paste plots from wandb
+Lossess used: MSE, L1, PoissonNLLoss, KLDivLoss, CrossEntropyLoss
+Now, analysing loss functions. From train/val loss curves we see that all loss functions perform similarly. In terms of test MAE (L1) and MSE (L2) we see that L1 is the best choice and is closely followed by poisson loss. KLDiv is the worst choice.
+![loss_train_loss](public/bench/loss_train_loss.png)
+![loss_val_loss](public/bench/loss_val_loss.png)
+![loss_test_l1](public/bench/loss_test_l1.png)
+![loss_test_l2](public/bench/loss_test_l2.png)
+![loss_test_pois](public/bench/loss_test_pois.png)
+![loss_train_time](public/bench/loss_train_time.png)
 
-### UNet vs Encoder-Decoder
-TODO: Paste plots from wandb
+
+### UNet vs Encoder-Decoder  
+Encoder-Decoder architecure results clearly show that UNet is a better choice for this task. However, I have arbitrarly made the decision to have Encoder-Decoder as sort  of a smaller model for faster training. But, as we can see from the results, it's being outperformed by UNet by landslide.  
+![params](public/bench/eu_params.png)  
+
+![test_l1](public/bench/eu_test_l1.png)  
 
 ## Other
-- UI with Gradio
-To run the UI, run the following command:
-```bash
-python gradio_app.py
-```
+- **UI with Gradio**
 ![gradio](public/misc/gradio.png)
+To run the UI, run the following command:
+    ```bash
+    python gradio_app.py
+    ```
 
-- Deployment with RunPod
-![runpod](public/misc/run_pod.png)
+- **Deployment for training in cloud (RunPod)**
+![runpod](public/misc/run_pod.png)  
+
+
+- **Docker image for Gradio App**
+    ```bash
+    # Build the image
+    docker build -t inpainting .
+    # Run the image
+    docker run -p 8087:8087 inpainting
+    # Now you can access the app at http://localhost:8087
+    ```
+
+- **WanDB tracking**
+    ![wandb](public/misc/wandb.png)
 
 
 
@@ -146,16 +174,16 @@ python gradio_app.py
 ## Grading
 | What                              | Points | How                                                                     |
 |-----------------------------------|--------|-------------------------------------------------------------------------|
-| Image inpainting                  | 3      | The main goal                                                           |
+| Image inpainting                  | 3      | The model is able to inpaint images                                    |
 | Own architecture (>50% own layers)| 2      | Encoder-Decoder CNN architecture                                        |
 | 2nd own architecture with >50% own layers| 2 | Own UNet implementation                                            |
 | Evaluation on a test set >= 10k   | 1      | Performed evaluation on 10,000 images in the test set                    |
-| Testing various loss functions    | 1      | MSE, KLDivLoss, PoissonNLLoss, CELoss                                  |
-| Testing various optimizers        | 1      | Adam, SGD, RMSprop, Adadelta                                           |
+| Testing various loss functions    | 1      | MSE, L1, PoissonNLLoss, KLDivLoss, CrossEntropyLoss                     |
+| Testing various optimizers        | 1      | Adam, SGD, RMSprop, Adagrad                                            |
 | Image augmentations               | 1      | Running random transformations on the input image before feeding it to the network |
 | Weights & Biases                  | 1      | Wandb properly set up -- everything was tracked in it and I used data I saved to wandb for analysis |
-| Run as Docker                     | 1      | Dockerfile provided in the main directory                              |
-| REST API with GUI                 | 1      | Flask REST API with GUI allowing to upload masked image                 |
+| Run as Docker                     | 1      | Dockerfile for building the docker image containing the Gradio UI        |
+| Gradio GUI                        | 1      | Gradio UI for inpainting                                               |
 | RunPod   (DevOps)                 | 1      | Set up development environment with RunPod                              |
 ***
 __Total: 15__
@@ -163,6 +191,7 @@ __Total: 15__
 
 
 ## References
+Related stuff that I used to understand the topic and implement the project: 
 [1] UNet: https://arxiv.org/abs/1505.04597s  
 [2] UNet + Attention: https://arxiv.org/pdf/2209.08850.pdf   
 [3] II-GAN: https://ieeexplore.ieee.org/document/8322859    
