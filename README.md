@@ -55,13 +55,13 @@ We cut-out 256x256 squares from images to create a larger dataset comprising of 
 - Test - 10k  
 
 Example of images:
-![](public/ex_images.png)
+![](public/report/ex_images.png)
 
 Masks:
-![](public/ex_masks.png)
+![](public/report/ex_masks.png)
 
 Masks applied to images:
-![](public/ex_masked.png)
+![](public/report/ex_masked.png)
 
 
 ## Architectures
@@ -74,8 +74,10 @@ Specification:
 - Default config:
     - Epochs: 20
     - LR: 1e-3
-    - Optimizer: Adam
+    - Optimizer: Adam  
 
+Diagram generatred with torchviz: 
+![](public/report/EncoderDecoder.png)
 
 *UNet* is a convolutional neural network architecture designed for semantic segmentation tasks. It consists of an encoder-decoder structure with skip connections, enabling precise localization.
 Implementation provided here has an encoder with three blocks, a bottleneck layer, and a decoder with corresponding blocks. Skip connections concatenate encoder and decoder feature maps.
@@ -89,35 +91,46 @@ Specification:
     - Optimizer: Adam
 
 
+Diagram generatred with torchviz: 
+![](public/report/UNet.png)
+
+For both models, the parameters chosen for training are the same, and are kind of an arbitrary, but informed, choice. I experimented on small subset of the data and chose the parameters that seemed to work the best. I also tried to keep the number of parameters as low as possible, so that the training is faster and cheaper.
+
 
 ## Training
 
 #### Images on first epoch: 
 
 Original images
-![input](public/ep0_images.png)
-![masked](public/ep0_masked.png)
-![output](public/ep0_masks.png)
+![input](public/report/ep0_images.png)
+![masked](public/report/ep0_masked.png)
+![output](public/report/ep0_masks.png)
 
 #### Images on the last epoch:
-![input](public/ep15_images.png)
-![masked](public/ep15_masked.png)
-![output](public/ep15_output.png)
+![input](public/report/ep15_images.png)
+![masked](public/report/ep15_masked.png)
+![output](public/report/ep15_output.png)
 
 I think the results are pretty good. We can see that the model is able to inpaint the images and fill the missing parts with plausible content. However, the input mask shapes are often pretty visible as blurry shapes. I believe being able to remove them would be a good next step for this project, but not an easy one. I would guess that we would have to use some sort of GAN architecture to achieve that or borrow some ideas from generative AI like loss function based on perceptual similarity or style transfer. Nevertheless, it is clear that model is able to kind of understand the context of the image and fill the missing parts with blurred, but very much plausible content (e.g. sky, grass, trees, edges, etc.).
 
 ## Demo / some more images
-![original](public/demo_original.png)
-![mask](public/demo_mask.png)
-![masked](public/demo_masked.png)
-![output](public/demo_output.png)
+![original](public/report/demo_original.png)
+![mask](public/report/demo_mask.png)
+![masked](public/report/demo_masked.png)
+![output](public/report/demo_output.png)
 
 
 
 ## Benchmarking
 
 ### Optimizers
-Adam, SGD, RMSprop, Adagrad  
+Adam, SGD, RMSprop, Adagrad    
+
+- Adam: Adaptive Moment Estimation combines adaptive learning rates for each parameter with momentum to improve training efficiency and converge faster. This is a classic optimizer for deep learning and basically the default choice.
+- Stochastic Gradient Descent (SGD): Updates model parameters in the direction opposite to the gradient of the loss function with respect to the parameters, using a fixed learning rate.
+- RMSprop: Root Mean Square Propagation adapts the learning rate for each parameter by dividing it by the root of the mean square of recent gradients, helping to prevent oscillations in training.
+- Adagrad: Adapts the learning rate for each parameter based on the historical gradients, scaling down the learning rate for frequently occurring parameters and vice versa to focus on less frequently updated parameters.
+
 *rmsprop is omitted in this visualizations because it achieved horrible results and makes it impossible to see anything useful on the plots.  
 The most interesting takeaway from this benchmark is that SGD is consistently much worse than Adam and Adagrad. Adam and Adagrad are very similar in terms of performance, but Adam is just a bit better.
 ![optim_train_loss](public/bench/optim_train_loss.png)
@@ -128,7 +141,14 @@ The most interesting takeaway from this benchmark is that SGD is consistently mu
 ![optim_train_time](public/bench/optim_train_time.png)
 
 ### Loss functions
-Lossess used: MSE, L1, PoissonNLLoss, KLDivLoss, CrossEntropyLoss
+Lossess used: MSE, L1, PoissonNLLoss, KLDivLoss, CrossEntropyLoss.   
+
+- Mean Squared Error (MSE): Measures the average squared difference between predicted and target values, penalizing larger errors more heavily.
+- L1 Loss (MAE): Computes the mean absolute difference between predicted and target values, providing a robust measure of error that is less sensitive to outliers.
+- Poisson Negative Log Likelihood Loss (PoissonNLLLoss): Optimized for count data, it measures the negative log likelihood of a Poisson distribution to model the discrepancy between predicted and target values.
+- Kullback-Leibler Divergence Loss (KLDivLoss): Measures how one probability distribution diverges from a second, typically a theoretical or target distribution, often used in variational autoencoders.
+- Cross-Entropy Loss: Measures the difference between two probability distributions, commonly used in classification tasks to penalize incorrect classifications and encourage the model to assign higher probabilities to the correct class. However, we don't use it in it's binary form, but rather as a pixel-wise cross entropy loss.
+
 Now, analysing loss functions. From train/val loss curves we see that all loss functions perform similarly. In terms of test MAE (L1) and MSE (L2) we see that L1 is the best choice and is closely followed by poisson loss. KLDiv is the worst choice.
 ![loss_train_loss](public/bench/loss_train_loss.png)
 ![loss_val_loss](public/bench/loss_val_loss.png)
@@ -146,14 +166,16 @@ Encoder-Decoder architecure results clearly show that UNet is a better choice fo
 
 ## Other
 - **UI with Gradio**
-![gradio](public/misc/gradio.png)
+    ![gradio](public/report/misc/gradio.png)
 To run the UI, run the following command:
     ```bash
     python gradio_app.py
     ```
 
-- **Deployment for training in cloud (RunPod)**
-![runpod](public/misc/run_pod.png)  
+- **Deployment for training in cloud (RunPod)**  
+
+    I was running experiments using RunPod environment with RTXA5000 GPU. It allowed me to run experiments in the cloud and save the results to the cloud. It was very convenient and I would recommend it. Also, it isn't very expensive.
+    ![runpod](public/report/misc/run_pod.png)  
 
 
 - **Docker image for Gradio App**
@@ -165,8 +187,9 @@ To run the UI, run the following command:
     # Now you can access the app at http://localhost:8087
     ```
 
-- **WanDB tracking**
-    ![wandb](public/misc/wandb.png)
+- **WanDB tracking**  
+    All experiments were tracked using Weights & Biases. I decided to use this tracking tool for the first time and I really liked it. It's very easy to use and it provides a nice UI and remote storage for all the experiments. Before, I was using MLFlow and I think I will stick with WanDB from now on.
+    ![wandb](public/report/misc/wandb.png)
 
 
 
