@@ -1,9 +1,0 @@
-https://ieeexplore.ieee.org/document/8322859
-
-attention
-https://arxiv.org/pdf/2209.08850.pdf
-
-mssim pytorch
-https://github.com/VainF/pytorch-msssim
-https://stackoverflow.com/questions/53956932/use-pytorch-ssim-loss-function-in-my-model
-

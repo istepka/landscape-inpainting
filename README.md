@@ -129,6 +129,18 @@ TODO: Paste plots from wandb
 ### UNet vs Encoder-Decoder
 TODO: Paste plots from wandb
 
+## Other
+- UI with Gradio
+To run the UI, run the following command:
+```bash
+python gradio_app.py
+```
+![gradio](public/misc/gradio.png)
+
+- Deployment with RunPod
+![runpod](public/misc/run_pod.png)
+
+
 
 
 ## Grading
