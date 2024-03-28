@@ -201,26 +201,6 @@ To run the UI, run the following command:
 
 
 
-
-## Grading
-| What                              | Points | How                                                                     |
-|-----------------------------------|--------|-------------------------------------------------------------------------|
-| Image inpainting                  | 3      | The model is able to inpaint images                                    |
-| Own architecture (>50% own layers)| 2      | Encoder-Decoder CNN architecture                                        |
-| 2nd own architecture with >50% own layers| 2 | Own UNet implementation                                            |
-| Evaluation on a test set >= 10k   | 1      | Performed evaluation on 10,000 images in the test set                    |
-| Testing various loss functions    | 1      | MSE, L1, PoissonNLLoss, KLDivLoss, CrossEntropyLoss                     |
-| Testing various optimizers        | 1      | Adam, SGD, RMSprop, Adagrad                                            |
-| Image augmentations               | 1      | Running random transformations on the input image before feeding it to the network |
-| Weights & Biases                  | 1      | Wandb properly set up -- everything was tracked in it and I used data I saved to wandb for analysis |
-| Run as Docker                     | 1      | Dockerfile for building the docker image containing the Gradio UI        |
-| Gradio GUI                        | 1      | Gradio UI for inpainting                                               |
-| RunPod   (DevOps)                 | 1      | Set up development environment with RunPod                              |
-***
-__Total: 15__
-
-
-
 ## References
 Related stuff that I used to understand the topic and implement the project: 
 [1] UNet: https://arxiv.org/abs/1505.04597s  
